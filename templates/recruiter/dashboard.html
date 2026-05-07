@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Recruiter Dashboard — JobNest{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+  <div>
+    <h1>Welcome, {{ current_user.full_name }}</h1>
+    <p>{{ current_user.company_name or 'Your company' }} · Recruiter</p>
+  </div>
+  <a href="{{ url_for('recruiter.post_job') }}" class="btn btn-primary">+ Post New Job</a>
+</div>
+
+<!-- Stats -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-value">{{ jobs|length }}</div>
+    <div class="stat-label">Jobs Posted</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ total_applications }}</div>
+    <div class="stat-label">Total Applications</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ jobs|selectattr('is_active')|list|length }}</div>
+    <div class="stat-label">Active Listings</div>
+  </div>
+</div>
+
+<!-- Job listings table -->
+<div class="section-card">
+  <h2>Your Job Postings</h2>
+
+  {% if jobs %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Job Title</th>
+          <th>Location</th>
+          <th>Type</th>
+          <th>Applicants</th>
+          <th>Status</th>
+          <th>Posted</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in jobs %}
+          {% set app_count = job.applications|length %}
+          <tr>
+            <td><strong>{{ job.title }}</strong></td>
+            <td>{{ job.location }}</td>
+            <td><span class="badge badge-type-sm">{{ job.job_type }}</span></td>
+            <td>
+              <a href="{{ url_for('recruiter.view_applicants', job_id=job.id) }}" class="link-pill">
+                {{ app_count }} applicant{{ 's' if app_count != 1 }}
+              </a>
+            </td>
+            <td>
+              <span class="badge {{ 'badge-green' if job.is_active else 'badge-grey' }}">
+                {{ 'Active' if job.is_active else 'Inactive' }}
+              </span>
+            </td>
+            <td>{{ job.created_at.strftime('%d %b %Y') }}</td>
+            <td class="actions">
+              <a href="{{ url_for('recruiter.edit_job', job_id=job.id) }}" class="btn btn-sm btn-outline">Edit</a>
+              <a href="{{ url_for('recruiter.view_applicants', job_id=job.id) }}" class="btn btn-sm btn-primary">Rank</a>
+              <form method="POST" action="{{ url_for('recruiter.delete_job', job_id=job.id) }}"
+                    style="display:inline"
+                    onsubmit="return confirm('Delete this job and all its applications?')">
+                <button type="submit" class="btn btn-sm btn-danger">Del</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h3>No jobs posted yet</h3>
+      <p>Start by posting your first job opening.</p>
+      <a href="{{ url_for('recruiter.post_job') }}" class="btn btn-primary" style="margin-top:1rem">Post a Job</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

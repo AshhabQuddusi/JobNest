@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Browse Jobs — TalentAI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Browse Jobs</h1>
+  <p>{{ jobs|length }} position{{ 's' if jobs|length != 1 }} available</p>
+</div>
+
+<!-- Search & Filter Bar -->
+<div class="search-bar-wrap">
+  <form method="GET" action="{{ url_for('jobs.list_jobs') }}" class="search-form">
+    <div class="search-inputs">
+      <input type="text" name="q" placeholder="🔍  Job title or skill…" value="{{ query }}" />
+      <input type="text" name="location" placeholder="📍  Location" value="{{ location }}" />
+      <select name="job_type">
+        <option value="">All types</option>
+        {% for t in ['Full-time','Part-time','Contract','Internship','Remote'] %}
+          <option value="{{ t }}" {{ 'selected' if job_type == t }}>{{ t }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">Search</button>
+      {% if query or location or job_type %}
+        <a href="{{ url_for('jobs.list_jobs') }}" class="btn btn-ghost">Clear</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- Job Cards -->
+{% if jobs %}
+  <div class="jobs-grid">
+    {% for job in jobs %}
+      <div class="job-card">
+        <div class="job-card-header">
+          <div>
+            <h3><a href="{{ url_for('jobs.job_detail', job_id=job.id) }}">{{ job.title }}</a></h3>
+            <p class="job-company">{{ job.company }}</p>
+          </div>
+          <span class="badge badge-type">{{ job.job_type }}</span>
+        </div>
+
+        <div class="job-meta">
+          <span>📍 {{ job.location }}</span>
+          {% if job.salary_range %}
+            <span>💰 {{ job.salary_range }}</span>
+          {% endif %}
+        </div>
+
+        <p class="job-desc">{{ job.description[:180] }}{% if job.description|length > 180 %}…{% endif %}</p>
+
+        {% if job.skills_list() %}
+          <div class="skill-tags">
+            {% for skill in job.skills_list()[:5] %}
+              <span class="tag">{{ skill }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="job-card-footer">
+          <span class="job-date">{{ job.created_at.strftime('%d %b %Y') }}</span>
+          {% if current_user.is_authenticated and current_user.role == 'seeker' %}
+            {% if job.id in applied_job_ids %}
+              <span class="btn btn-sm btn-ghost" style="cursor:default">✓ Applied</span>
+            {% else %}
+              <a href="{{ url_for('seeker.apply', job_id=job.id) }}" class="btn btn-sm btn-primary">Apply Now</a>
+            {% endif %}
+          {% else %}
+            <a href="{{ url_for('jobs.job_detail', job_id=job.id) }}" class="btn btn-sm btn-outline">View</a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🔎</div>
+    <h3>No jobs found</h3>
+    <p>Try adjusting your search filters.</p>
+  </div>
+{% endif %}
+{% endblock %}

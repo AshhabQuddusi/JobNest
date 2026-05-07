@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }} — TalentAI{% endblock %}
+
+{% block content %}
+<div class="detail-layout">
+  <!-- Main -->
+  <div class="detail-main">
+    <a href="{{ url_for('jobs.list_jobs') }}" class="back-link">← Back to jobs</a>
+
+    <div class="detail-card">
+      <div class="detail-header">
+        <div>
+          <h1>{{ job.title }}</h1>
+          <p class="job-company-lg">{{ job.company }}</p>
+        </div>
+        <span class="badge badge-type">{{ job.job_type }}</span>
+      </div>
+
+      <div class="detail-meta">
+        <span>📍 {{ job.location }}</span>
+        {% if job.salary_range %}<span>💰 {{ job.salary_range }}</span>{% endif %}
+        <span>📅 Posted {{ job.created_at.strftime('%d %B %Y') }}</span>
+      </div>
+
+      {% if job.skills_list() %}
+        <div class="skill-tags" style="margin-bottom:1.5rem">
+          {% for skill in job.skills_list() %}
+            <span class="tag">{{ skill }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <h2 class="section-sub">About the Role</h2>
+      <div class="prose">{{ job.description }}</div>
+
+      <h2 class="section-sub">Requirements</h2>
+      <div class="prose">{{ job.requirements }}</div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="detail-sidebar">
+    <div class="sidebar-card">
+      {% if current_user.is_authenticated and current_user.role == 'seeker' %}
+        {% if already_applied %}
+          <div class="applied-notice">✓ You've applied to this role</div>
+        {% else %}
+          <a href="{{ url_for('seeker.apply', job_id=job.id) }}" class="btn btn-primary btn-full">Apply Now</a>
+        {% endif %}
+      {% elif not current_user.is_authenticated %}
+        <p style="margin-bottom:1rem;color:var(--text-muted)">Sign in to apply</p>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-full">Log In to Apply</a>
+      {% endif %}
+
+      <div style="margin-top:1.5rem">
+        <p class="sidebar-label">Company</p>
+        <p>{{ job.company }}</p>
+        <p class="sidebar-label" style="margin-top:1rem">Location</p>
+        <p>{{ job.location }}</p>
+        <p class="sidebar-label" style="margin-top:1rem">Job Type</p>
+        <p>{{ job.job_type }}</p>
+        {% if job.salary_range %}
+          <p class="sidebar-label" style="margin-top:1rem">Salary</p>
+          <p>{{ job.salary_range }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </aside>
+</div>
+{% endblock %}

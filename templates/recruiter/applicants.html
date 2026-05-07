@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Applicants — {{ job.title }} — JobNest{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <a href="{{ url_for('recruiter.dashboard') }}" class="back-link">← Dashboard</a>
+    <h1>Applicants: {{ job.title }}</h1>
+    <p>{{ job.company }} · {{ applications|length }} application{{ 's' if applications|length != 1 }}</p>
+  </div>
+</div>
+
+<!-- AI Ranking explanation -->
+<div class="info-banner">
+  <span class="info-icon">🤖</span>
+  <div>
+    <strong>AI-Powered Ranking Active</strong>
+    <p>Candidates are ranked by TF-IDF cosine similarity between their resume and this job's description. Higher score = better match.</p>
+  </div>
+</div>
+
+{% if applications %}
+  <div class="section-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Candidate</th>
+          <th>Email</th>
+          <th>AI Match Score</th>
+          <th>Match Bar</th>
+          <th>Status</th>
+          <th>Applied</th>
+          <th>Resume</th>
+          <th>Update Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for app in applications %}
+          {% set info = score_map.get(app.id, {'score': 0.0, 'rank': '-'}) %}
+          <tr class="{{ 'top-match' if info.score >= 0.6 }}">
+            <td><strong>#{{ info.rank }}</strong></td>
+            <td>{{ app.applicant.full_name }}</td>
+            <td>{{ app.applicant.email }}</td>
+            <td>
+              <span class="score-badge
+                {{ 'score-high' if info.score >= 0.6 else ('score-mid' if info.score >= 0.3 else 'score-low') }}">
+                {{ '%.1f'|format(info.score * 100) }}%
+              </span>
+            </td>
+            <td>
+              <div class="mini-bar">
+                <div class="mini-bar-fill
+                  {{ 'fill-high' if info.score >= 0.6 else ('fill-mid' if info.score >= 0.3 else 'fill-low') }}"
+                  style="width: {{ '%.1f'|format(info.score * 100) }}%"></div>
+              </div>
+            </td>
+            <td>
+              <span class="badge badge-status-{{ app.status }}">{{ app.status.capitalize() }}</span>
+            </td>
+            <td>{{ app.applied_at.strftime('%d %b %Y') }}</td>
+            <td>
+              {% if app.resume_id %}
+                <a href="{{ url_for('recruiter.download_resume', resume_id=app.resume_id) }}"
+                   class="btn btn-sm btn-outline">Download</a>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+            <td>
+              <form method="POST" action="{{ url_for('recruiter.update_status', app_id=app.id) }}" style="display:flex;gap:4px;">
+                <select name="status" class="select-sm">
+                  {% for s in ['pending','reviewed','shortlisted','rejected'] %}
+                    <option value="{{ s }}" {{ 'selected' if app.status == s }}>{{ s.capitalize() }}</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-sm btn-primary">Set</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Cover Letters accordion -->
+  <div class="section-card" style="margin-top:2rem">
+    <h2>Cover Letters</h2>
+    {% for app in applications %}
+      {% if app.cover_letter %}
+        <details class="cover-letter-item">
+          <summary>{{ app.applicant.full_name }} — {{ app.applied_at.strftime('%d %b %Y') }}</summary>
+          <div class="cover-letter-body">{{ app.cover_letter }}</div>
+        </details>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+{% else %}
+  <div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <h3>No applications yet</h3>
+    <p>Share your job posting to attract candidates.</p>
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Register — JobNest{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card auth-card-wide">
+    <div class="auth-header">
+      <h1>Create account</h1>
+      <p>Join JobNest as a job seeker or recruiter</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.register') }}" class="auth-form" novalidate>
+
+      <!-- Role selector -->
+      <div class="role-selector">
+        <label class="role-option">
+          <input type="radio" name="role" value="seeker"
+            {% if request.form.get('role','seeker') == 'seeker' %}checked{% endif %} />
+          <div class="role-box">
+            <span class="role-icon">👤</span>
+            <span class="role-label">Job Seeker</span>
+            <span class="role-desc">Find your next role</span>
+          </div>
+        </label>
+        <label class="role-option">
+          <input type="radio" name="role" value="recruiter"
+            {% if request.form.get('role') == 'recruiter' %}checked{% endif %} />
+          <div class="role-box">
+            <span class="role-icon">🏢</span>
+            <span class="role-label">Recruiter</span>
+            <span class="role-desc">Hire top talent</span>
+          </div>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="full_name">Full Name</label>
+        <input type="text" id="full_name" name="full_name" required placeholder="Jane Doe"
+               value="{{ request.form.get('full_name','') }}" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" required placeholder="you@example.com"
+               value="{{ request.form.get('email','') }}" />
+      </div>
+
+      <!-- Company name shown only for recruiter (JS toggle) -->
+      <div class="form-group" id="company-field" style="display:none">
+        <label for="company_name">Company Name</label>
+        <input type="text" id="company_name" name="company_name" placeholder="Acme Corp"
+               value="{{ request.form.get('company_name','') }}" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required placeholder="Min 6 chars" />
+        </div>
+        <div class="form-group">
+          <label for="confirm_password">Confirm Password</label>
+          <input type="password" id="confirm_password" name="confirm_password" required placeholder="Repeat password" />
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+    </form>
+
+    <p class="auth-footer">
+      Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  // Toggle company field based on role selection
+  const radios = document.querySelectorAll('input[name="role"]');
+  const field  = document.getElementById('company-field');
+
+  function toggleCompany() {
+    const selected = document.querySelector('input[name="role"]:checked');
+    field.style.display = selected && selected.value === 'recruiter' ? 'block' : 'none';
+  }
+
+  radios.forEach(r => r.addEventListener('change', toggleCompany));
+  toggleCompany(); // run once on page load
+</script>
+{% endblock %}

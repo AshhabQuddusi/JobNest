@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit Job' if job else 'Post a Job' }} — JobNest{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card">
+    <h1>{{ 'Edit Job' if job else 'Post a New Job' }}</h1>
+
+    <form method="POST"
+          action="{{ url_for('recruiter.edit_job', job_id=job.id) if job else url_for('recruiter.post_job') }}"
+          class="job-form">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Job Title *</label>
+          <input type="text" name="title" required placeholder="e.g. Senior Python Developer"
+                 value="{{ job.title if job else '' }}" />
+        </div>
+        <div class="form-group">
+          <label>Company *</label>
+          <input type="text" name="company" required placeholder="Your company name"
+                 value="{{ job.company if job else company }}" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Location *</label>
+          <input type="text" name="location" required placeholder="e.g. Bangalore / Remote"
+                 value="{{ job.location if job else '' }}" />
+        </div>
+        <div class="form-group">
+          <label>Job Type</label>
+          <select name="job_type">
+            {% for t in ['Full-time','Part-time','Contract','Internship','Remote'] %}
+              <option value="{{ t }}" {{ 'selected' if (job and job.job_type == t) or (not job and t == 'Full-time') }}>{{ t }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Salary Range</label>
+        <input type="text" name="salary_range" placeholder="e.g. ₹8–12 LPA"
+               value="{{ job.salary_range if job else '' }}" />
+      </div>
+
+      <div class="form-group">
+        <label>Required Skills <small>(comma-separated)</small></label>
+        <input type="text" name="skills_required"
+               placeholder="Python, Machine Learning, SQL, Django"
+               value="{{ job.skills_required if job else '' }}" />
+      </div>
+
+      <div class="form-group">
+        <label>Job Description *</label>
+        <textarea name="description" required rows="6"
+                  placeholder="Describe the role, team, and responsibilities…">{{ job.description if job else '' }}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Requirements *</label>
+        <textarea name="requirements" required rows="5"
+                  placeholder="List qualifications, experience, must-haves…">{{ job.requirements if job else '' }}</textarea>
+      </div>
+
+      {% if job %}
+        <div class="form-group checkbox-row">
+          <label class="checkbox-label">
+            <input type="checkbox" name="is_active" {{ 'checked' if job.is_active }} />
+            Job is actively accepting applications
+          </label>
+        </div>
+      {% endif %}
+
+      <div class="form-actions">
+        <a href="{{ url_for('recruiter.dashboard') }}" class="btn btn-ghost">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          {{ 'Save Changes' if job else 'Post Job' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

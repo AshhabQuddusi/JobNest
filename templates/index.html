@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}JobNest — AI-Powered Job Portal{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">AI-Powered Hiring</div>
+    <h1>Find Your <em>Perfect</em><br>Match — Faster</h1>
+    <p class="hero-sub">
+      JobNest uses machine learning to rank candidates by relevance,
+      so great talent meets great opportunities without the noise.
+    </p>
+    <div class="hero-actions">
+      <a href="{{ url_for('auth.register') }}?role=seeker" class="btn btn-primary btn-lg">Find a Job</a>
+      <a href="{{ url_for('auth.register') }}?role=recruiter" class="btn btn-outline btn-lg">Hire Talent</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="score-card">
+      <div class="score-header">AI Match Score</div>
+      <div class="score-list">
+        <div class="score-item"><span class="candidate">Priya S.</span><span class="bar"><span style="width:92%"></span></span><span class="pct">92%</span></div>
+        <div class="score-item"><span class="candidate">Rohan K.</span><span class="bar"><span style="width:78%"></span></span><span class="pct">78%</span></div>
+        <div class="score-item"><span class="candidate">Ayesha M.</span><span class="bar"><span style="width:65%"></span></span><span class="pct">65%</span></div>
+        <div class="score-item"><span class="candidate">Dev P.</span><span class="bar"><span style="width:51%"></span></span><span class="pct">51%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features">
+  <h2 class="section-title">Why JobNest?</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📄</div>
+      <h3>Smart Resume Parsing</h3>
+      <p>Automatically extracts skills and experience from uploaded PDFs so candidates don't fill forms forever.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3>TF-IDF Ranking</h3>
+      <p>Every applicant is scored using cosine similarity against the job description. No more gut-feel shortlisting.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Instant Dashboard</h3>
+      <p>Recruiters see ranked candidates the moment they open applications. Seekers track every stage in real time.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <h3>Powerful Search</h3>
+      <p>Filter by title, location, or job type. Find the right opportunity — or the right person — in seconds.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band">
+  <h2>Ready to get started?</h2>
+  <div class="cta-btns">
+    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Create Free Account</a>
+    <a href="{{ url_for('jobs.list_jobs') }}" class="btn btn-ghost btn-lg">Browse Jobs →</a>
+  </div>
+</section>
+{% endblock %}

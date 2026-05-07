@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Apply — {{ job.title }} — JobNest{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card">
+    <a href="{{ url_for('jobs.job_detail', job_id=job.id) }}" class="back-link">← Job Details</a>
+    <h1>Apply for: {{ job.title }}</h1>
+    <p class="sub-text">{{ job.company }} · {{ job.location }}</p>
+
+    <form method="POST" action="{{ url_for('seeker.apply', job_id=job.id) }}" class="auth-form">
+
+      <div class="form-group">
+        <label>Select Resume *</label>
+        {% for resume in resumes %}
+          <label class="resume-radio">
+            <input type="radio" name="resume_id" value="{{ resume.id }}"
+                   {{ 'checked' if loop.first }} required />
+            <div class="resume-radio-box">
+              <span>📄 {{ resume.original_name }}</span>
+              <span class="resume-date">Uploaded {{ resume.uploaded_at.strftime('%d %b %Y') }}</span>
+              {% if resume.skills_list() %}
+                <div class="skill-tags" style="margin-top:4px">
+                  {% for sk in resume.skills_list()[:6] %}
+                    <span class="tag tag-sm">{{ sk }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </label>
+        {% endfor %}
+        <p style="margin-top:0.5rem;font-size:0.85rem">
+          <a href="{{ url_for('seeker.upload_resume') }}">+ Upload another resume</a>
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label>Cover Letter <small>(optional)</small></label>
+        <textarea name="cover_letter" rows="6"
+                  placeholder="Introduce yourself and explain why you're a great fit…"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <a href="{{ url_for('jobs.job_detail', job_id=job.id) }}" class="btn btn-ghost">Cancel</a>
+        <button type="submit" class="btn btn-primary">Submit Application</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

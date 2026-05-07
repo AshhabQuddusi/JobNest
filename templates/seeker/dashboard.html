@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard — JobNest{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+  <div>
+    <h1>Hello, {{ current_user.full_name }} 👋</h1>
+    <p>Job Seeker Dashboard</p>
+  </div>
+  <div style="display:flex;gap:0.75rem">
+    <a href="{{ url_for('seeker.upload_resume') }}" class="btn btn-outline">Upload Resume</a>
+    <a href="{{ url_for('jobs.list_jobs') }}" class="btn btn-primary">Browse Jobs</a>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-value">{{ applications|length }}</div>
+    <div class="stat-label">Applications</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ applications|selectattr('status','eq','shortlisted')|list|length }}</div>
+    <div class="stat-label">Shortlisted</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ resumes|length }}</div>
+    <div class="stat-label">Resumes</div>
+  </div>
+</div>
+
+<!-- Resumes section -->
+<div class="section-card">
+  <div class="section-row-header">
+    <h2>My Resumes</h2>
+    <a href="{{ url_for('seeker.upload_resume') }}" class="btn btn-sm btn-outline">+ Upload</a>
+  </div>
+
+  {% if resumes %}
+    <div class="resume-list">
+      {% for resume in resumes %}
+        <div class="resume-item">
+          <div class="resume-info">
+            <span class="resume-icon">📄</span>
+            <div>
+              <p class="resume-name">{{ resume.original_name }}</p>
+              <p class="resume-date">Uploaded {{ resume.uploaded_at.strftime('%d %b %Y') }}</p>
+              {% if resume.skills_list() %}
+                <div class="skill-tags" style="margin-top:4px">
+                  {% for skill in resume.skills_list()[:8] %}
+                    <span class="tag tag-sm">{{ skill }}</span>
+                  {% endfor %}
+                  {% if resume.skills_list()|length > 8 %}
+                    <span class="tag tag-sm">+{{ resume.skills_list()|length - 8 }} more</span>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          <form method="POST" action="{{ url_for('seeker.delete_resume', resume_id=resume.id) }}"
+                onsubmit="return confirm('Delete this resume?')">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state-inline">
+      <p>No resumes uploaded yet. <a href="{{ url_for('seeker.upload_resume') }}">Upload one now</a> to start applying.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Applications section -->
+<div class="section-card" style="margin-top:2rem">
+  <h2>My Applications</h2>
+
+  {% if applications %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Job Title</th>
+          <th>Company</th>
+          <th>Location</th>
+          <th>AI Score</th>
+          <th>Status</th>
+          <th>Applied</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for app in applications %}
+          <tr>
+            <td><a href="{{ url_for('jobs.job_detail', job_id=app.job_id) }}">{{ app.job.title }}</a></td>
+            <td>{{ app.job.company }}</td>
+            <td>{{ app.job.location }}</td>
+            <td>
+              {% if app.similarity_score > 0 %}
+                <span class="score-badge
+                  {{ 'score-high' if app.similarity_score >= 0.6 else ('score-mid' if app.similarity_score >= 0.3 else 'score-low') }}">
+                  {{ '%.1f'|format(app.similarity_score * 100) }}%
+                </span>
+              {% else %}
+                <span class="text-muted">Pending</span>
+              {% endif %}
+            </td>
+            <td><span class="badge badge-status-{{ app.status }}">{{ app.status.capitalize() }}</span></td>
+            <td>{{ app.applied_at.strftime('%d %b %Y') }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('seeker.withdraw', app_id=app.id) }}"
+                    onsubmit="return confirm('Withdraw this application?')">
+                <button type="submit" class="btn btn-sm btn-ghost">Withdraw</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty-state-inline">
+      <p>You haven't applied to any jobs yet. <a href="{{ url_for('jobs.list_jobs') }}">Explore openings →</a></p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

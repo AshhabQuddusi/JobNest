@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Upload Resume — JobNest{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card">
+    <a href="{{ url_for('seeker.dashboard') }}" class="back-link">← Dashboard</a>
+    <h1>Upload Your Resume</h1>
+    <p class="sub-text">We'll automatically parse your PDF and extract skills to match you with jobs.</p>
+
+    <form method="POST" action="{{ url_for('seeker.upload_resume') }}"
+          enctype="multipart/form-data" class="auth-form">
+
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" name="resume_file" id="resume_file"
+               accept=".pdf" required class="file-input" />
+        <div class="upload-zone-inner">
+          <div class="upload-icon">📄</div>
+          <p class="upload-main">Drop your PDF here, or <label for="resume_file" class="upload-link">browse</label></p>
+          <p class="upload-sub" id="file-name">PDF only · Max 16 MB</p>
+        </div>
+      </div>
+
+      <div class="parsed-features">
+        <div class="parsed-item">✅ Skill extraction</div>
+        <div class="parsed-item">✅ Full text indexing</div>
+        <div class="parsed-item">✅ AI match scoring</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full" style="margin-top:1.5rem">
+        Upload &amp; Parse Resume
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Show selected filename in upload zone
+  document.getElementById('resume_file').addEventListener('change', function () {
+    const label = document.getElementById('file-name');
+    label.textContent = this.files[0] ? this.files[0].name : 'PDF only · Max 16 MB';
+    label.style.color = 'var(--accent)';
+  });
+
+  // Drag and drop visual feedback
+  const zone = document.getElementById('upload-zone');
+  ['dragenter','dragover'].forEach(evt =>
+    zone.addEventListener(evt, e => { e.preventDefault(); zone.classList.add('drag-over'); })
+  );
+  ['dragleave','drop'].forEach(evt =>
+    zone.addEventListener(evt, e => { e.preventDefault(); zone.classList.remove('drag-over'); })
+  );
+</script>
+{% endblock %}
