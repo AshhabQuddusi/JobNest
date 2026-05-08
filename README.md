@@ -133,7 +133,7 @@ JobNest is a portfolio and academic project demonstrating AI-assisted recruitmen
 
 👨‍💻 Developer
 Ashhab Quddusi
-LinkedIn: Ashhab Quddusi LinkedIn
+LinkedIn: linkedin.com/in/ashhab-quddusi/
 Email: ashhabquddusi4@gmail.com
 
 📄 License
