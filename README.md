@@ -48,14 +48,21 @@ JobNest is a full-stack, AI-powered recruitment platform built with Flask and My
 | Home Page |
 <img width="1915" height="924" alt="Screenshot 2026-05-08 151110" src="https://github.com/user-attachments/assets/41ac05c3-794d-40c6-9db7-f88eb3b05da5" />
 
-| Login Page |
-<img width="1913" height="917" alt="Screenshot 2026-05-08 151315" src="https://github.com/user-attachments/assets/732ed354-cd19-4f57-a930-57ecf5bc2dc4" />
 
 | Recruiter Panel |
+<img width="1913" height="917" alt="Screenshot 2026-05-08 151315" src="https://github.com/user-attachments/assets/732ed354-cd19-4f57-a930-57ecf5bc2dc4" />
+
+
+
+| Login Page |
 <img width="1904" height="914" alt="Screenshot 2026-05-08 151154" src="https://github.com/user-attachments/assets/ebf52d90-ced9-4da5-865e-43c6dbcd969d" />
+
+
 
 | Jobs Dashboard |
 <img width="1906" height="922" alt="Screenshot 2026-05-08 151250" src="https://github.com/user-attachments/assets/1d54d934-55ce-41e0-9f9d-7bfdfbaf9e0d" />
+
+
 
 | AI Applicant Ranking |
 <img width="1893" height="913" alt="Screenshot 2026-05-08 151238" src="https://github.com/user-attachments/assets/dda985f2-5752-40c1-bf1a-32d7f85a5821" />
