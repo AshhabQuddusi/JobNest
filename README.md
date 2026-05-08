@@ -1,6 +1,6 @@
 # JobNest — AI-Powered Recruitment Platform
 
-> JobNest is a full-stack AI-powered recruitment platform built with Flask and MySQL that intelligently ranks job applicants using TF-IDF and cosine similarity-based resume-job matching.
+JobNest is a full-stack, AI-powered recruitment platform built with Flask and MySQL that intelligently ranks job applicants using TF-IDF and cosine-similarity-based resume-job matching.
 
 ---
 
@@ -45,9 +45,16 @@
 
 ## 📸 Screenshots
 
-| Home Page | Jobs Dashboard | Recruiter Panel | AI Applicant Ranking |
-|---|---|---|---|
-| *(Add Screenshot)* | *(Add Screenshot)* | *(Add Screenshot)* | *(Add Screenshot)* |
+| Home Page | Jobs Dashboard | Recruiter Panel 
+* | <img width="1915" height="924" alt="Screenshot 2026-05-08 151110" src="https://github.com/user-attachments/assets/41ac05c3-794d-40c6-9db7-f88eb3b05da5" />
+
+* | *<img width="1906" height="912" alt="Screenshot 2026-05-08 151140" src="https://github.com/user-attachments/assets/f71e4a6f-935f-4274-8f74-62abb22a9f3b" />
+* | *<img width="1904" height="914" alt="Screenshot 2026-05-08 151154" src="https://github.com/user-attachments/assets/ebf52d90-ced9-4da5-865e-43c6dbcd969d" />
+  | Jobs Dashboard |
+* | *<img width="1906" height="922" alt="Screenshot 2026-05-08 151250" src="https://github.com/user-attachments/assets/1d54d934-55ce-41e0-9f9d-7bfdfbaf9e0d" />
+  | AI Applicant Ranking |
+* | <img width="1893" height="913" alt="Screenshot 2026-05-08 151238" src="https://github.com/user-attachments/assets/dda985f2-5752-40c1-bf1a-32d7f85a5821" />
+
 
 ---
 
